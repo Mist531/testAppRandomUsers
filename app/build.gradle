@@ -5,9 +5,6 @@ plugins {
     id 'com.google.devtools.ksp' version "1.7.20-1.0.8"
 }
 
-def versionMajor = 1
-def versionMinor = 1
-
 android {
     namespace 'com.example.testapprandomusers'
     compileSdk 33
@@ -19,13 +16,16 @@ android {
 
     applicationVariants.configureEach { variant ->
         kotlin.sourceSets {
-            named(variant.name) {
+            named(variant.name){
                 kotlin.srcDir("build/generated/ksp/${variant.name}/kotlin")
             }
         }
     }
 
     defaultConfig {
+        def versionMajor = 1
+        def versionMinor = 1
+
         applicationId "com.example.testapprandomusers"
         minSdk 28
         targetSdk 33
@@ -37,7 +37,6 @@ android {
             useSupportLibrary true
         }
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -68,14 +67,7 @@ android {
 }
 
 dependencies {
-
-    //VersionInDef
     def compose_bom = platform('androidx.compose:compose-bom:2023.01.00')
-    def koin_android_compose_version = '3.4.1'
-    def koin_android_version= "3.3.1"
-    def koin_ksp_version = "1.1.0"
-    def arrow_version = "1.1.2"
-    def destinations_version = '1.8.32-beta'
 
     //Compose
     implementation compose_bom
@@ -84,7 +76,9 @@ dependencies {
     implementation 'androidx.compose.ui:ui-tooling-preview'
     implementation 'androidx.compose.material3:material3'
     implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
+    //implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
+    //implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1'
+    //implementation 'androidx.lifecycle:lifecycle-runtime-compose:2.6.0-alpha05'
     implementation 'androidx.activity:activity-compose:1.6.1'
     implementation 'androidx.compose.material:material'
     implementation 'androidx.compose.material:material-icons-core'
@@ -103,14 +97,19 @@ dependencies {
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
 
     //Koin
+    def koin_android_compose_version = "3.4.1"
+    def koin_android_version= "3.3.1"
+    def koin_ksp_version = "1.1.0"
+    def koin_test_version = "3.3.2"
     implementation "io.insert-koin:koin-androidx-compose:$koin_android_compose_version"
     implementation "io.insert-koin:koin-android:$koin_android_version"
     implementation "io.insert-koin:koin-annotations:$koin_ksp_version"
-    testImplementation "io.insert-koin:koin-test-junit4:3.3.2"
+    testImplementation "io.insert-koin:koin-test-junit4:$koin_test_version"
     ksp "io.insert-koin:koin-ksp-compiler:$koin_ksp_version"
 
     //Arrow
-    implementation(platform("io.arrow-kt:arrow-stack:1.1.2"))
+    def arrow_version = "1.1.2"
+    implementation(platform("io.arrow-kt:arrow-stack:$arrow_version"))
     implementation("io.arrow-kt:arrow-core")
     implementation("io.arrow-kt:arrow-optics")
     implementation("io.arrow-kt:arrow-fx-coroutines")
@@ -118,10 +117,12 @@ dependencies {
     ksp("io.arrow-kt:arrow-optics-ksp-plugin:$arrow_version")
 
     //Icons
-    implementation("br.com.devsrsouza.compose.icons.android:simple-icons:1.0.0")
-    implementation("br.com.devsrsouza.compose.icons.android:font-awesome:1.0.0")
+    def compose_icons_version = "1.0.0"
+    implementation("br.com.devsrsouza.compose.icons.android:simple-icons:$compose_icons_version")
+    implementation("br.com.devsrsouza.compose.icons.android:font-awesome:$compose_icons_version")
 
     //ComposeDestinations
+    def destinations_version = "1.8.32-beta"
     implementation "io.github.raamcosta.compose-destinations:core:${destinations_version}"
     ksp "io.github.raamcosta.compose-destinations:ksp:${destinations_version}"
 
@@ -129,4 +130,18 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
     implementation("app.softwork:kotlinx-uuid-core:0.0.16")
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1'
+
+    //Coil
+    implementation("io.coil-kt:coil-compose:2.2.2")
+
+    //Ktor
+    def ktor_version = "2.2.2"
+    implementation "io.ktor:ktor-client-core:$ktor_version"
+    implementation "io.ktor:ktor-client-serialization:$ktor_version"
+    implementation "io.ktor:ktor-client-android:$ktor_version"
+    implementation "io.ktor:ktor-client-logging:$ktor_version"
+    implementation "io.ktor:ktor-client-cio:$ktor_version"
+    implementation "io.ktor:ktor-client-content-negotiation:$ktor_version"
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+
 }
