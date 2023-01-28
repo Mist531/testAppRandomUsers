@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class IdModel(
     val name: String,
-    val value: String
+    val value: String?
 )

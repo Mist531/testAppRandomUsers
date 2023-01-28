@@ -1,6 +1,6 @@
 package com.example.testapprandomusers.repositories
 
-import android.util.Log
+import arrow.core.Either
 import com.example.testapprandomusers.models.UsersInfoModel
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -50,22 +50,15 @@ class UsersRepositoriesImpl(
         _usersInfoState.receiveAsFlow().distinctUntilChanged()
 
     private suspend fun fetchInformation() =
-        client.get("https://randomuser.me/api/?results=10").body<UsersInfoModel>().let{
-            Log.e("TAGIn", "UsersRepositoriesImplRIGHT: $it")
-            _usersInfoState.send(it)
-        }
-
-/*        Either.catch {
+        Either.catch(::exceptionHandling) {
             client.get("https://randomuser.me/api/?results=10").body<UsersInfoModel>()
         }.fold(
             ifLeft = {
-                Log.e("TAGIn", "UsersRepositoriesImplERROR: $it")
             },
             ifRight = {
-                Log.e("TAGIn", "UsersRepositoriesImplRIGHT: $it")
                 _usersInfoState.send(it)
             }
-        )*/
+        )
 
     init {
         scope.launch {

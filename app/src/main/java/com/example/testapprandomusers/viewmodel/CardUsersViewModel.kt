@@ -1,5 +1,6 @@
 package com.example.testapprandomusers.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,19 +25,31 @@ data class CardUsersState(
     val usersInfo: List<ResultModel> = emptyList(),
     val selectUserId: UUID? = null,
     val pageInfo: InfoModel? = null,
+    val isRefreshing: Boolean = false
 ) {
     companion object
 }
 
 sealed interface CardUsersScreenEvent {
-    data class SelectUserId(val id: UUID) : CardUsersScreenEvent
-    object GetInfo : CardUsersScreenEvent
+    data class SelectUserId(
+        val id: UUID
+    ) : CardUsersScreenEvent
+
+    data class GetInfo(
+        val page: Int
+    ) : CardUsersScreenEvent
+
+    object NextPage : CardUsersScreenEvent
+
+    object PrevPage : CardUsersScreenEvent
 }
 
 @KoinViewModel
 class CardUsersViewModel(
     usersRepositories: UsersRepositories
 ) : ViewModel() {
+
+    private val maxPage = 10
 
     private val signals = Channel<CardUsersScreenEvent>()
 
@@ -48,6 +61,7 @@ class CardUsersViewModel(
 
     init {
         viewModelScope.launch {
+            pushSignal(CardUsersScreenEvent.GetInfo(page = 1))
             for (event in signals) {
                 when (event) {
                     is CardUsersScreenEvent.SelectUserId -> {
@@ -57,11 +71,32 @@ class CardUsersViewModel(
                             }
                         }
                     }
-
                     is CardUsersScreenEvent.GetInfo -> {
                         usersRepositories.pushSignal(
                             UsersRepositories.UsersRepositoriesSignals.FetchInformation
                         )
+                    }
+                    is CardUsersScreenEvent.NextPage -> {
+                        _state.value.pageInfo?.let {
+                            if (it.page < maxPage) {
+                                pushSignal(
+                                    CardUsersScreenEvent.GetInfo(
+                                        page = it.page + 1
+                                    )
+                                )
+                            }
+                        }
+                    }
+                    is CardUsersScreenEvent.PrevPage -> {
+                        _state.value.pageInfo?.let {
+                            if (it.page > 1) {
+                                pushSignal(
+                                    CardUsersScreenEvent.GetInfo(
+                                        page = it.page - 1
+                                    )
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -73,12 +108,32 @@ class CardUsersViewModel(
         _state.combine(
             usersRepositories.usersInfoState
         ) { state, repositoryState ->
-            CardUsersState.usersInfo.modify(state) {
+            Log.e("TAGREPSTATE", "repositoryState: $repositoryState")
+            CardUsersState(
+                usersInfo = repositoryState.results,
+                pageInfo = repositoryState.info,
+                selectUserId = state.selectUserId
+            )
+            /*CardUsersState.let {
+                it.usersInfo.modify(state) {
+                    repositoryState.results
+                }
+                it.pageInfo.modify(state) {
+                    repositoryState.info
+                }
+                it.selectUserId.modify(state) {
+                    state.selectUserId
+                }
+                //this.selectUserId.set(state, state.selectUserId)
+            }*/
+            /*CardUsersState.usersInfo.modify(state) {
                 repositoryState.results
-            }
-            CardUsersState.pageInfo.modify(state) {
-                repositoryState.info
-            }
+            }*/
+            /*repositoryState.info.let {
+                CardUsersState.pageInfo.modify(state) {
+                    it
+                }
+            }*/
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000L),

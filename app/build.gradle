@@ -123,7 +123,7 @@ dependencies {
 
     //ComposeDestinations
     def destinations_version = "1.8.32-beta"
-    implementation "io.github.raamcosta.compose-destinations:core:${destinations_version}"
+    implementation "io.github.raamcosta.compose-destinations:animations-core:${destinations_version}"
     ksp "io.github.raamcosta.compose-destinations:ksp:${destinations_version}"
 
     //Serialization
@@ -136,12 +136,15 @@ dependencies {
 
     //Ktor
     def ktor_version = "2.2.2"
-    implementation "io.ktor:ktor-client-core:$ktor_version"
     implementation "io.ktor:ktor-client-serialization:$ktor_version"
     implementation "io.ktor:ktor-client-android:$ktor_version"
-    implementation "io.ktor:ktor-client-logging:$ktor_version"
+
+    implementation "io.ktor:ktor-client-core:$ktor_version"
     implementation "io.ktor:ktor-client-cio:$ktor_version"
     implementation "io.ktor:ktor-client-content-negotiation:$ktor_version"
-    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+    implementation "io.ktor:ktor-serialization-kotlinx-json:$ktor_version"
+    implementation "io.ktor:ktor-client-auth:$ktor_version"
+    implementation "io.ktor:ktor-client-logging:$ktor_version"
+    implementation "io.ktor:ktor-client-okhttp:$ktor_version"
 
 }
