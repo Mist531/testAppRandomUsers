@@ -1,4 +1,4 @@
-package com.example.testapprandomusers.models
+package com.example.testapprandomusers.models.users_repositories
 
 import kotlinx.serialization.Serializable
 

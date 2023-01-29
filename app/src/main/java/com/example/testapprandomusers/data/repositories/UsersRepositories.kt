@@ -1,8 +1,9 @@
-package com.example.testapprandomusers.repositories
+package com.example.testapprandomusers.data.repositories
 
 import arrow.core.Either
-import com.example.testapprandomusers.exeption.exceptionHandling
-import com.example.testapprandomusers.models.UsersInfoModel
+import com.example.testapprandomusers.data.exception.exceptionHandling
+import com.example.testapprandomusers.data.stores.AppExceptionStore
+import com.example.testapprandomusers.models.users_repositories.UsersInfoModel
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -33,7 +34,8 @@ sealed interface UsersRepositories {
 
 @Single(binds = [UsersRepositories::class])
 class UsersRepositoriesImpl(
-    private val client: HttpClient
+    private val client: HttpClient,
+    private val appExceptionStore: AppExceptionStore
 ) : UsersRepositories {
 
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
@@ -57,11 +59,13 @@ class UsersRepositoriesImpl(
         page: Int
     ) =
         Either.catch(::exceptionHandling) {
-            client.get("https://randomuser.me/api/?results=$countPerson&page=$page")
+            client.get("https://randomuser.me/api/?results=$countPerson&page=$page&seed=abc")
                 .body<UsersInfoModel>()
         }.fold(
             ifLeft = {
-                //TODO: Handle error
+                appExceptionStore.pushSignal(
+                    AppExceptionStore.AppExceptionStoreSignals.AddAppException(it)
+                )
             },
             ifRight = {
                 _usersInfoState.send(it)
@@ -82,5 +86,4 @@ class UsersRepositoriesImpl(
             }
         }
     }
-
 }

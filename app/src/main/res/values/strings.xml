@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">testAppRandomUsers</string>
+    <string name="user_info_name_last_first">Имя Фамилия пользователя</string>
+    <string name="info_user_dob">Дата Рождения</string>
+    <string name="user_info_registered_date">Дата регистрации</string>
+    <string name="info_user_location">Место проживания</string>
+    <string name="user_info_phone">Номер телефона</string>
+    <string name="info_user_city">", Город: "</string>
+    <string name="info_user_country">"Страна: "</string>
+    <string name="info_user_age">" Возраст: "</string>
 </resources>

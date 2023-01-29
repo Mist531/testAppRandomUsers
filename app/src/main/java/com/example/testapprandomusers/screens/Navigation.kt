@@ -8,10 +8,3 @@ import com.ramcosta.composedestinations.annotation.RootNavGraph
 annotation class MainNavGraph(
     val start: Boolean = false
 )
-
-/*
-@RootNavGraph
-@NavGraph
-annotation class SettingsNavGraph(
-    val start: Boolean = false
-)*/

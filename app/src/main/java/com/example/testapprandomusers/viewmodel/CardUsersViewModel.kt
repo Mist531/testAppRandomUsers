@@ -1,13 +1,12 @@
 package com.example.testapprandomusers.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.optics.optics
-import com.example.testapprandomusers.models.InfoModel
-import com.example.testapprandomusers.models.ResultModel
-import com.example.testapprandomusers.repositories.UsersRepositories
+import com.example.testapprandomusers.models.users_repositories.InfoModel
+import com.example.testapprandomusers.models.users_repositories.ResultModel
+import com.example.testapprandomusers.data.repositories.UsersRepositories
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,7 +24,8 @@ data class CardUsersState(
     val usersInfo: List<ResultModel> = emptyList(),
     val selectUserId: UUID? = null,
     val pageInfo: InfoModel? = null,
-    val isRefreshing: Boolean = false
+    val isRefreshing: Boolean = false,
+    val maxPage: Int = 10,
 ) {
     companion object
 }
@@ -49,7 +49,6 @@ class CardUsersViewModel(
     usersRepositories: UsersRepositories
 ) : ViewModel() {
 
-    private val maxPage = 10
     private val countPerson = 10
 
     private val signals = Channel<CardUsersScreenEvent>()
@@ -81,8 +80,8 @@ class CardUsersViewModel(
                         )
                     }
                     is CardUsersScreenEvent.NextPage -> {
-                        _state.value.pageInfo?.let {
-                            if (it.page < maxPage) {
+                        state.value.pageInfo?.let {
+                            if (it.page < _state.value.maxPage) {
                                 pushSignal(
                                     CardUsersScreenEvent.GetInfo(
                                         page = it.page + 1
@@ -92,7 +91,7 @@ class CardUsersViewModel(
                         }
                     }
                     is CardUsersScreenEvent.PrevPage -> {
-                        _state.value.pageInfo?.let {
+                        state.value.pageInfo?.let {
                             if (it.page > 1) {
                                 pushSignal(
                                     CardUsersScreenEvent.GetInfo(
@@ -112,13 +111,19 @@ class CardUsersViewModel(
         _state.combine(
             usersRepositories.usersInfoState
         ) { state, repositoryState ->
-            Log.e("TAGREPSTATE", "repositoryState: $repositoryState")
             CardUsersState(
                 usersInfo = repositoryState.results,
                 pageInfo = repositoryState.info,
                 selectUserId = state.selectUserId
             )
-            /*CardUsersState.let {
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000L),
+            initialValue = CardUsersState()
+        )
+}
+
+/*CardUsersState.let {
                 it.usersInfo.modify(state) {
                     repositoryState.results
                 }
@@ -130,17 +135,11 @@ class CardUsersViewModel(
                 }
                 //this.selectUserId.set(state, state.selectUserId)
             }*/
-            /*CardUsersState.usersInfo.modify(state) {
-                repositoryState.results
-            }*/
-            /*repositoryState.info.let {
-                CardUsersState.pageInfo.modify(state) {
-                    it
-                }
-            }*/
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = CardUsersState()
-        )
-}
+/*CardUsersState.usersInfo.modify(state) {
+    repositoryState.results
+}*/
+/*repositoryState.info.let {
+    CardUsersState.pageInfo.modify(state) {
+        it
+    }
+}*/
