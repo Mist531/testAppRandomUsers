@@ -1,15 +1,15 @@
-package com.example.testapprandomusers.screens.card_uesrs_sceen
+package com.example.testapprandomusers.screens.card_users_screen
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -22,7 +22,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -45,6 +44,26 @@ import com.example.testapprandomusers.viewmodel.CardUsersViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.koinViewModel
+
+//region Preview
+@Preview(showBackground = false)
+@Composable
+fun PreviewNumberPerson() {
+    NumberPerson(
+        index = 1
+    )
+}
+
+@Preview(showBackground = false)
+@Composable
+fun NamePersonPreview() {
+    NamePerson(
+        nameFirst = "John",
+        nameLast = "Doe"
+    )
+}
+//endregion
+
 
 @OptIn(ExperimentalMaterialApi::class)
 @MainNavGraph(start = true)
@@ -69,7 +88,7 @@ fun CardUsersScreen(
 
     Box(
         modifier = Modifier
-            .background(MaterialTheme.colors.background)
+            .background(Color.Black)
             .fillMaxSize()
             .pullRefresh(state = pullRefreshState)
     ) {
@@ -81,11 +100,6 @@ fun CardUsersScreen(
                         userInfo
                     )
                 )
-                /*viewModel.pushSignal(
-                    CardUsersScreenEvent.SelectUserId(
-                        id = id
-                    )
-                )*/
             }
         )
         PullRefreshIndicator(
@@ -98,16 +112,16 @@ fun CardUsersScreen(
 
 @Composable
 fun VerticalGridPerson(
+    modifier: Modifier = Modifier,
     usersInfoList: List<ResultModel>,
     onClick: (ResultModel) -> Unit
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(150.dp),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize(),
     ) {
         itemsIndexed(usersInfoList) { index, userInfo ->
-            Log.e("TAG$index", "CardUsersScreen: $userInfo")
             CardUser(
                 userInfo = userInfo,
                 index = index,
@@ -123,26 +137,31 @@ fun VerticalGridPerson(
 
 @Composable
 fun CardUser(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     userInfo: ResultModel,
     index: Int
 ) {
-    Card(
+    Column(
         modifier = modifier
+
             .padding(10.dp)
-            .width(100.dp)
-            .height(180.dp),
-        shape = RoundedCornerShape(10.dp),
+            .clip(
+                RoundedCornerShape(10.dp)
+            )
+            .wrapContentSize()
+            .background(Color.DarkGray),
+       // shape = RoundedCornerShape(10.dp),
     ) {
         Box(
             modifier = Modifier
-                .fillMaxSize()
+                .height(180.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(10.dp))
         ) {
             SubcomposeAsyncImage(
                 model = userInfo.picture.large,
                 contentDescription = null,
                 modifier = Modifier
-                    //.background(Color.Transparent)
                     .fillMaxSize(),
                 alignment = Alignment.Center,
                 contentScale = ContentScale.FillBounds,
@@ -150,34 +169,28 @@ fun CardUser(
                     CircularProgressIndicator(
                         modifier = Modifier
                             .size(30.dp)
-                            .align(Alignment.Center)
+                            .align(Alignment.Center),
+                        color = MaterialTheme.colors.primary
                     )
                 }
             )
             NumberPerson(
-                index = index,
+                index = index + 1,
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .padding(10.dp)
             )
-            NamePerson(
-                nameFirst = userInfo.name.first,
-                nameLast = userInfo.name.last,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(10.dp)
-            )
         }
+        NamePerson(
+            nameFirst = userInfo.name.first,
+            nameLast = userInfo.name.last,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(10.dp)
+        )
     }
 }
 
-@Preview(showBackground = false)
-@Composable
-fun PreviewNumberPerson() {
-    NumberPerson(
-        index = 1
-    )
-}
 
 @Composable
 fun NumberPerson(
@@ -187,13 +200,12 @@ fun NumberPerson(
     Box(
         modifier = modifier
             .wrapContentSize()
-            .height(20.dp)
             .sizeIn(
                 minWidth = 20.dp,
                 maxWidth = 50.dp
             )
             .clip(RoundedCornerShape(percent = 50))
-            .background(Color.White),
+            .background(Color.Black),
         contentAlignment = Alignment.Center
     ) {
         Text(
@@ -203,20 +215,12 @@ fun NumberPerson(
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             fontSize = 15.sp,
-            color = MaterialTheme.colors.onSurface,
+            color = Color.White,
             textAlign = TextAlign.Center
         )
     }
 }
 
-@Preview(showBackground = false)
-@Composable
-fun NamePersonPreview() {
-    NamePerson(
-        nameFirst = "John",
-        nameLast = "Doe"
-    )
-}
 
 @Composable
 fun NamePerson(

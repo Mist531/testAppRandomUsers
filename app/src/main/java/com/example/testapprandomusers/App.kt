@@ -1,7 +1,7 @@
 package com.example.testapprandomusers
 
 import android.app.Application
-import com.example.testapprandomusers.repositories.clientModule
+import com.example.testapprandomusers.modules.clientModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin

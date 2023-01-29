@@ -1,4 +1,4 @@
-package com.example.testapprandomusers.repositories
+package com.example.testapprandomusers.exeption
 
 import io.ktor.client.call.DoubleReceiveException
 import io.ktor.client.call.NoTransformationFoundException
@@ -39,22 +39,20 @@ fun exceptionHandling(exception: Throwable): NetworkException {
     return when (exception) {
         is UnresolvedAddressException -> {
             NetworkException.ServerError(
-                "Нет соединения с сервером"
+                "No connections to the server"
             )
         }
-
         is NoTransformationFoundException, is DoubleReceiveException -> {
             NetworkException.JSONParseException(
                 exception.message.orEmpty()
             )
         }
-
         else -> {
             NetworkException.UnknownException(
                 if (exception.message?.isNotEmpty() == true && exception.message != null) {
                     exception.message.orEmpty()
                 } else {
-                    "Нет соединения с сервером"
+                    "No connections to the server"
                 }
             )
         }

@@ -1,4 +1,4 @@
-package com.example.testapprandomusers.repositories
+package com.example.testapprandomusers.modules
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -18,7 +18,7 @@ val clientModule = module {
                 exponentialDelay()
             }
             install(HttpTimeout) {
-                requestTimeoutMillis = 60000
+                requestTimeoutMillis = 10000
             }
             install(ContentNegotiation) {
                 json(getKoin().get())
@@ -34,30 +34,3 @@ val clientModule = module {
         }
     }
 }
-
-/*
-val clientModule = module {
-    factory {
-        HttpClient(CIO) {
-            install(HttpRequestRetry) {
-                retryOnServerErrors(maxRetries = 5)
-                exponentialDelay()
-            }
-            install(Logging) {
-                logger = Logger.ANDROID
-                level = LogLevel.ALL
-            }
-            install(ContentNegotiation) {
-                json(get())
-            }
-        }
-    }
-    single {
-        Json {
-            prettyPrint = true
-            isLenient = true
-            ignoreUnknownKeys = true
-            encodeDefaults = true
-        }
-    }
-}*/

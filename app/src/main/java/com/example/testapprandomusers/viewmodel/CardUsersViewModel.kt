@@ -50,6 +50,7 @@ class CardUsersViewModel(
 ) : ViewModel() {
 
     private val maxPage = 10
+    private val countPerson = 10
 
     private val signals = Channel<CardUsersScreenEvent>()
 
@@ -73,7 +74,10 @@ class CardUsersViewModel(
                     }
                     is CardUsersScreenEvent.GetInfo -> {
                         usersRepositories.pushSignal(
-                            UsersRepositories.UsersRepositoriesSignals.FetchInformation
+                            UsersRepositories.UsersRepositoriesSignals.FetchInformation(
+                                page = event.page,
+                                countPerson = countPerson
+                            )
                         )
                     }
                     is CardUsersScreenEvent.NextPage -> {

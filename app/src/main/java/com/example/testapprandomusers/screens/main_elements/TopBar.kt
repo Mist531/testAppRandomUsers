@@ -1,4 +1,4 @@
-package com.example.testapprandomusers.screens
+package com.example.testapprandomusers.screens.main_elements
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -37,7 +38,6 @@ fun TopBar(
                     imageVector = Icons.Default.Settings,
                     contentDescription = null,
                     modifier = Modifier
-
                         .padding(horizontal = 10.dp)
                         .size(30.dp)
                         .clickable {
@@ -46,7 +46,7 @@ fun TopBar(
                 )
             }
         },
-        backgroundColor = MaterialTheme.colors.primary,
+        backgroundColor = Color.Black,
         contentColor = MaterialTheme.colors.onPrimary
     )
 }
