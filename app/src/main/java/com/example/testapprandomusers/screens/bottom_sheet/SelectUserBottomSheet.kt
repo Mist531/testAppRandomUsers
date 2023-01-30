@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.testapprandomusers.R
 import com.example.testapprandomusers.models.users_repositories.ResultModel
-import com.example.testapprandomusers.screens.MainNavGraph
+import com.example.testapprandomusers.screens.navigation.MainNavGraph
 import com.example.testapprandomusers.ui.theme.AppTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.spec.DestinationStyle
@@ -66,7 +66,10 @@ fun UserInfo(
         )
         UserInfoBlock(
             title = stringResource(R.string.info_user_dob),
-            info = timeParse(user.dob.date) +
+            info = timeParse(
+                time = user.dob.date,
+                needTime = false
+            ) +
                     stringResource(R.string.info_user_age) +
                     user.dob.age
         )
@@ -130,9 +133,15 @@ fun UserInfoBlock(
 
 fun timeParse(
     time: String,
+    needTime: Boolean = true
 ): String {
     return ZonedDateTime.parse(time)
         .toLocalDateTime().atZone(ZoneOffset.UTC)
         .withZoneSameInstant(ZoneId.systemDefault())
-        .format(DateTimeFormatter.ofPattern("dd MMMM yyyy г. HH:mm", Locale.forLanguageTag("RU")))
+        .format(
+            DateTimeFormatter.ofPattern(
+                "dd MMMM yyyy г. ${if (needTime) "HH:mm" else ""} ",
+                Locale.forLanguageTag("RU")
+            )
+        )
 }

@@ -25,7 +25,7 @@ data class SettingsState(
 
 sealed interface SettingsScreenEvent {
 
-    object clearException : SettingsScreenEvent
+    object ClearException : SettingsScreenEvent
 }
 
 @KoinViewModel
@@ -45,7 +45,7 @@ class SettingsViewModel(
         viewModelScope.launch {
             for (event in signals) {
                 when (event) {
-                    is SettingsScreenEvent.clearException -> {
+                    is SettingsScreenEvent.ClearException -> {
                         appExceptionStore.pushSignal(AppExceptionStore.AppExceptionStoreSignals.ClearAppException)
                     }
                 }

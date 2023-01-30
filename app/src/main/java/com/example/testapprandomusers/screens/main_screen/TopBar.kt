@@ -17,10 +17,13 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.testapprandomusers.screens.destinations.SettingsScreenDestination
+import com.example.testapprandomusers.R
+import com.example.testapprandomusers.screens.NavGraphs
 import com.example.testapprandomusers.ui.theme.AppTheme
 
 @Composable
@@ -39,40 +42,48 @@ fun TopBar(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Random Users",
+                    text = stringResource(R.string.app_name),
                     style = MaterialTheme.typography.h6,
                     color = AppTheme.colors.white,
                 )
-
-                if (currentDestination?.destination?.route == SettingsScreenDestination.route) {
-                    Icon(
-                        imageVector = Icons.Default.Home,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .padding(horizontal = 10.dp)
-                            .size(30.dp)
-                            .clickable {
-                                homeOnClick()
-                            },
-                        tint = AppTheme.colors.white,
+                if (
+                    currentDestination?.destination?.route !in NavGraphs.main.destinations.map { it.route }
+                ) {
+                    TopBarIcon(
+                        onClick = {
+                            homeOnClick()
+                        },
+                        imageVector = Icons.Default.Home
                     )
-                }else{
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .padding(horizontal = 10.dp)
-                            .size(30.dp)
-                            .clickable {
-                                settingsOnClick()
-                            },
-                        tint = AppTheme.colors.white,
+                } else {
+                    TopBarIcon(
+                        onClick = {
+                            settingsOnClick()
+                        },
+                        imageVector = Icons.Default.Settings
                     )
                 }
-
             }
         },
         backgroundColor = AppTheme.colors.black,
         contentColor = AppTheme.colors.black,
+    )
+}
+
+@Composable
+fun TopBarIcon(
+    onClick: () -> Unit,
+    imageVector: ImageVector
+) {
+    Icon(
+        imageVector = imageVector,
+        contentDescription = null,
+        modifier = Modifier
+            .padding(horizontal = 10.dp)
+            .size(30.dp)
+            .clickable {
+                onClick()
+            },
+        tint = AppTheme.colors.white,
     )
 }

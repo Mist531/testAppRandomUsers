@@ -50,7 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
 import com.example.testapprandomusers.models.users_repositories.ResultModel
-import com.example.testapprandomusers.screens.MainNavGraph
+import com.example.testapprandomusers.screens.navigation.MainNavGraph
 import com.example.testapprandomusers.screens.destinations.SelectUserBottomSheetDestination
 import com.example.testapprandomusers.ui.theme.AppTheme
 import com.example.testapprandomusers.viewmodel.CardUsersScreenEvent
@@ -104,41 +104,50 @@ fun CardUsersScreen(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Column(
-            modifier = Modifier
-                .pullRefresh(state = pullRefreshState)
-                .fillMaxSize()
-                .background(AppTheme.colors.black)
+        if (state.isRefreshing) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(30.dp)
+                    .align(Alignment.Center),
+                color = AppTheme.colors.white
+            )
+        } else {
+            Column(
+                modifier = Modifier
+                    .pullRefresh(state = pullRefreshState)
+                    .fillMaxSize()
+                    .background(AppTheme.colors.black)
 
-        ) {
-            VerticalGridPerson(
-                modifier = Modifier
-                    .weight(1f,false),
-                state = state,
-                usersInfoList = state.usersInfo,
-                onClick = { userInfo ->
-                    navigator.navigate(
-                        SelectUserBottomSheetDestination(
-                            userInfo
+            ) {
+                VerticalGridPerson(
+                    modifier = Modifier
+                        .weight(1f, false),
+                    state = state,
+                    usersInfoList = state.usersInfo,
+                    onClick = { userInfo ->
+                        navigator.navigate(
+                            SelectUserBottomSheetDestination(
+                                userInfo
+                            )
                         )
-                    )
-                }
-            )
-            PageSwitch(
-                state = state,
-                modifier = Modifier
-                    .height(70.dp),
-                onClickNext = {
-                    viewModel.pushSignal(
-                        CardUsersScreenEvent.NextPage
-                    )
-                },
-                onClickPrev = {
-                    viewModel.pushSignal(
-                        CardUsersScreenEvent.PrevPage
-                    )
-                }
-            )
+                    }
+                )
+                PageSwitch(
+                    state = state,
+                    modifier = Modifier
+                        .height(70.dp),
+                    onClickNext = {
+                        viewModel.pushSignal(
+                            CardUsersScreenEvent.NextPage
+                        )
+                    },
+                    onClickPrev = {
+                        viewModel.pushSignal(
+                            CardUsersScreenEvent.PrevPage
+                        )
+                    }
+                )
+            }
         }
         PullRefreshIndicator(
             refreshing = state.isRefreshing,

@@ -2,7 +2,7 @@ package com.example.testapprandomusers.data.stores
 
 import android.content.Context
 import com.example.testapprandomusers.data.exception.AppException
-import com.example.testapprandomusers.data.exception.appExceptionDataStore
+import com.example.testapprandomusers.data.datastore_serializers.appExceptionDataStore
 import com.example.testapprandomusers.models.exeptions.ExceptionDataStoreModel
 import com.example.testapprandomusers.models.exeptions.listException
 import kotlinx.coroutines.CoroutineScope

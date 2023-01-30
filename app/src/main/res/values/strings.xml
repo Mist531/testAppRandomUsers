@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">testAppRandomUsers</string>
+    <string name="app_name">Random Users</string>
     <string name="user_info_name_last_first">Имя Фамилия пользователя</string>
     <string name="info_user_dob">Дата Рождения</string>
     <string name="user_info_registered_date">Дата регистрации</string>
@@ -8,4 +8,5 @@
     <string name="info_user_city">", Город: "</string>
     <string name="info_user_country">"Страна: "</string>
     <string name="info_user_age">" Возраст: "</string>
+    <string name="settings_log">Посмотреть log ошибок</string>
 </resources>

@@ -46,7 +46,7 @@ sealed interface CardUsersScreenEvent {
 
 @KoinViewModel
 class CardUsersViewModel(
-    usersRepositories: UsersRepositories
+    private val usersRepositories: UsersRepositories
 ) : ViewModel() {
 
     private val countPerson = 10
@@ -58,6 +58,23 @@ class CardUsersViewModel(
             signals.send(event)
         }
     }
+
+
+    private val _state = MutableStateFlow(CardUsersState())
+    val state: StateFlow<CardUsersState> =
+        _state.combine(
+            usersRepositories.usersInfoState
+        ) { state, repositoryState ->
+            CardUsersState(
+                usersInfo = repositoryState.results,
+                pageInfo = repositoryState.info,
+                selectUserId = state.selectUserId
+            )
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000L),
+            initialValue = CardUsersState()
+        )
 
     init {
         viewModelScope.launch {
@@ -105,41 +122,4 @@ class CardUsersViewModel(
             }
         }
     }
-
-    private val _state = MutableStateFlow(CardUsersState())
-    val state: StateFlow<CardUsersState> =
-        _state.combine(
-            usersRepositories.usersInfoState
-        ) { state, repositoryState ->
-            CardUsersState(
-                usersInfo = repositoryState.results,
-                pageInfo = repositoryState.info,
-                selectUserId = state.selectUserId
-            )
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = CardUsersState()
-        )
 }
-
-/*CardUsersState.let {
-                it.usersInfo.modify(state) {
-                    repositoryState.results
-                }
-                it.pageInfo.modify(state) {
-                    repositoryState.info
-                }
-                it.selectUserId.modify(state) {
-                    state.selectUserId
-                }
-                //this.selectUserId.set(state, state.selectUserId)
-            }*/
-/*CardUsersState.usersInfo.modify(state) {
-    repositoryState.results
-}*/
-/*repositoryState.info.let {
-    CardUsersState.pageInfo.modify(state) {
-        it
-    }
-}*/

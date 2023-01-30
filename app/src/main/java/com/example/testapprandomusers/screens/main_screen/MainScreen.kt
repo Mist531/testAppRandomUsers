@@ -17,6 +17,7 @@ import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
 import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
 
@@ -53,7 +54,9 @@ fun MainScreen() {
             ) {
                 DestinationsNavHost(
                     navGraph = NavGraphs.root,
-                    engine = rememberAnimatedNavHostEngine(),
+                    engine = rememberAnimatedNavHostEngine(
+                        rootDefaultAnimations = RootNavGraphDefaultAnimations.ACCOMPANIST_FADING,
+                    ),
                     navController = navController,
                     modifier = Modifier
                         .fillMaxSize()

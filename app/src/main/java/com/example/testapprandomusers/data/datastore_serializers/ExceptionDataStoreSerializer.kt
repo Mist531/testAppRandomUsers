@@ -1,4 +1,4 @@
-package com.example.testapprandomusers.data.exception
+package com.example.testapprandomusers.data.datastore_serializers
 
 import android.content.Context
 import androidx.datastore.dataStore

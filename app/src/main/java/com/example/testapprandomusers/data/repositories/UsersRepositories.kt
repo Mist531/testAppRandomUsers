@@ -55,7 +55,7 @@ class UsersRepositoriesImpl(
         _usersInfoState.receiveAsFlow().distinctUntilChanged()
 
     private suspend fun fetchInformation(
-        countPerson: Int = 10,
+        countPerson: Int,
         page: Int
     ) =
         Either.catch(::exceptionHandling) {
